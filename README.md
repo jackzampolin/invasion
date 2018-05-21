@@ -74,3 +74,11 @@ ENDING ALIENS:
 
 UVwTfWpG city=wQbObcFCTIxuPkrd turns=10000
 ```
+
+### Running Tests
+
+To run the minimal tests for `invasion` run the following from the root of the repo:
+
+```
+$ go test ./... -v
+```

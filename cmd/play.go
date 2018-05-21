@@ -51,8 +51,7 @@ var playCmd = &cobra.Command{
 		// Play the game
 		m.Play()
 
-		fmt.Printf("\nENDING MAP (%d):\n\n%s", len(m.Cities), m)
-		fmt.Println("\nENDING ALIENS:\n")
+		fmt.Printf("\nENDING MAP (%d):\n\n%s\nENDING ALIENS:\n\n", len(m.Cities), m)
 		for _, a := range m.Aliens {
 			fmt.Println(a)
 		}
