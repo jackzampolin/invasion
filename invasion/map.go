@@ -11,8 +11,8 @@ import (
 
 const (
 	numTurns       = 10000
+	CityNameLength = 16
 	cityNameLength = 16
-	letterBytes    = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 )
 
 // NewMap creates a new map initialized with a source of randomness
@@ -68,17 +68,17 @@ func (m *Map) NewCities(n int) {
 	cityNames := m.randStrings(n, cityNameLength)
 	m.Cities = make([]*City, 0)
 	for _, c := range cityNames {
-		m.Cities = append(m.Cities, NewCity(c, cityNames))
+		m.Cities = append(m.Cities, m.NewCity(c, cityNames))
 	}
 }
 
 // Marshall returns the map in string format
 func (m *Map) String() string {
-	out := ""
+	outBytes := make([]byte, 0, cityNameLength*5*len(m.Cities))
 	for _, c := range m.Cities {
-		out += c.String()
+		outBytes = append(outBytes, []byte(c.String())...)
 	}
-	return out
+	return string(outBytes)
 }
 
 // Play runs the game
@@ -129,18 +129,19 @@ func (m *Map) DestroyCitiesAndAliens(turn int) {
 	}
 }
 
-// randStrings returns a list of n random strings of length l
-func (m *Map) randStrings(n, l int) []string {
-	cityNames := make([]string, 0)
-	for i := 0; i < n; i++ {
-		b := make([]byte, l)
-		for i := range b {
-			b[i] = letterBytes[m.rand.Intn(len(letterBytes))]
-		}
-		cityNames = append(cityNames, string(b))
-	}
-	return cityNames
-}
+//
+// // randStrings returns a list of n random strings of length l
+// func (m *Map) randStrings(n, l int) []string {
+// 	cityNames := make([]string, 0, n)
+// 	for i := 0; i < n; i++ {
+// 		b := make([]byte, l)
+// 		for i := range b {
+// 			b[i] = letterBytes[m.rand.Intn(len(letterBytes))]
+// 		}
+// 		cityNames = append(cityNames, string(b))
+// 	}
+// 	return cityNames
+// }
 
 func (m *Map) removeAliens(aliens []string) {
 	out := make([]*Alien, 0)

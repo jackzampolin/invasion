@@ -7,10 +7,17 @@ import (
 )
 
 // NewCity creates a new city with roads to other cities in the map
-func NewCity(name string, cities []string) *City {
+func (m *Map) NewCity(name string, cities []string) *City {
 	return &City{
 		Name:  name,
-		Roads: NewRoads(cities),
+		Roads: m.NewRoads(cities),
+	}
+}
+
+func (m *Map) NewCityBytes(name string, cities [][]byte) *City {
+	return &City{
+		Name:  name,
+		Roads: m.NewRoadsBytes(cities),
 	}
 }
 
@@ -46,4 +53,9 @@ func (c *City) String() string {
 	}
 	out += "\n"
 	return out
+}
+
+// Bytes returns the byte representation of the city
+func (c *City) Bytes() []byte {
+	return []byte(c.String())
 }

@@ -17,6 +17,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"strconv"
 
 	"github.com/jackzampolin/invasion/invasion"
 	"github.com/spf13/cobra"
@@ -36,11 +37,18 @@ var newMapCmd = &cobra.Command{
 			return
 		}
 		m := invasion.NewMap()
-		m.NewCities(numCities)
-		f, _ := os.Create(mapFile)
+		fmt.Printf("Generating %d random city names of %d length...\n", numCities, invasion.CityNameLength)
+		cities := m.CityBytes(numCities, invasion.CityNameLength)
+		f, _ := os.OpenFile(mapFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 		defer f.Close()
-		f.WriteString(m.String())
-		fmt.Printf("Created map file %s in current directory...\n", mapFile)
+		for i, c := range cities {
+			if i%1000 == 0 {
+				fmt.Printf("\r%s percent of cities written to %s...", strconv.FormatFloat((float64(i)/float64(numCities))*100, 'f', 2, 64), mapFile)
+			}
+			city := m.NewCityBytes(string(c), cities)
+			f.Write(city.Bytes())
+		}
+		fmt.Printf("\nCreated map file %s in current directory...\n", mapFile)
 	},
 }
 
